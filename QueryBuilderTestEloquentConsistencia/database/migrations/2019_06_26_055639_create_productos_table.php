@@ -21,7 +21,10 @@ class CreateProductosTable extends Migration
             $table->integer('cantidad_disponible');
             $table->integer('cantidad_minima');
             $table->integer('cantidad_maxima');
+            $table->string('url');
             $table->timestamps();
+
+            $table->unique([DB::raw('url(191)')]);
         });
     }
 

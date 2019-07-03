@@ -10,7 +10,7 @@ class Producto extends Model
 
     public function getRouteKeyName() 
     {
-       return 'nombre';
+       return 'url';
     }
 
 }
