@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Producto;
 
-class CatalogoController extends Controller
+class ProductoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class CatalogoController extends Controller
     {
          return view('productos.index', [
            'productos' => Producto::latest()->paginate(),
-       ]);
+         ]);
 
 
     }
@@ -58,7 +58,7 @@ class CatalogoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-      public function show(Producto $producto) \
+      public function show(Producto $producto) 
       {
         return view('productos.show', [
            'producto' => $producto
