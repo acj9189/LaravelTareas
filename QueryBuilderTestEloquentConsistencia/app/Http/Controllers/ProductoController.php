@@ -28,7 +28,8 @@ class CatalogoController extends Controller
      */
     public function create()
     {
-        //
+         return view('producto.create');
+
     }
 
     /**
@@ -39,7 +40,16 @@ class CatalogoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return Producto::create([
+           'nombre' => request('nombre'),
+           'precio' => request('precio'),
+           'iva' => request('iva'),
+           'cantidad_disponible' => request('cantidad_disponible'),
+           'cantidad_minima' => request('cantidad_minima'),
+           'cantidad_maxima' => request('cantidad_maxima'),
+           'url' => request('url')
+       ]);
+
     }
 
     /**

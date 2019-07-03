@@ -40,3 +40,6 @@ Route::delete('mensajes/{id}', 'MensajesController@destroy')->name('eliminar-men
 
 Route::get('/catalogo','ProductoController@index')->name('productos.index');
 Route::get('/catalogo/{producto}','ProductoController@show')->name('productos.show');
+
+Route::get('/catalogo/crear','ProductoController@create')->name('productos.create');
+Route::post('/catalogo/','ProductoController@store')->name('productos.store');
