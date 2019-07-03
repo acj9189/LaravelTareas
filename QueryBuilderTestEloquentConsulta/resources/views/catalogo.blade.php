@@ -8,13 +8,14 @@
    <h1>Catálogo de productos</h1>
    <ul>
         @isset ($productos)
-          @forelse($productos as $itemproductos)
-              <li>
-                  {{ $itemproductos->id }}-{{ $itemproductos->nombre }} <br>
-               </li>
-          @empty
-              <li>No hay productos para mostrar</li>
-          @endforelse
+           @forelse($productos as $producto)
+          <li>
+             <a href="{{ route('producto.show', $producto) }}">
+                      {{ $producto->nombre }}</a>
+           </li>
+      @empty
+          <li>No hay productos para mostrar</li>
+      @endforelse
           {{ $productos->links() }}
        @else
           <li>Productos no definido</li>

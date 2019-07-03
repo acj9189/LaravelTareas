@@ -35,3 +35,5 @@ Route::get('mensajes', 'MensajesController@index')->name('ver-mensajes');
 Route::get('mensajes/{id}', 'MensajesController@show')->name('buscar-mensaje');
 Route::get('mensajes/{id}/editar', 'MensajesController@edit')->name('editar-mensaje');
 Route::delete('mensajes/{id}', 'MensajesController@destroy')->name('eliminar-mensaje');
+
+Route::get('/catalogo/{id}','CatalogoController@show')->name('producto.show');
