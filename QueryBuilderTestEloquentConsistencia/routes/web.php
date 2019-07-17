@@ -43,3 +43,14 @@ Route::get('/catalogo/{producto}','ProductoController@show')->name('productos.sh
 
 Route::get('/catalogo/crear','ProductoController@create')->name('productos.create');
 Route::post('/catalogo/','ProductoController@store')->name('productos.store');
+
+
+Route::view('/', 'inicio', ['nombre' => 'NN'])->name('inicio');
+Route::view('acercade', 'acercade')->name('acercade');
+Route::get('catalogo', 'CatalogoController@index')->name('catalogo');
+
+Route::resource('mensajes', 'MensajesController');
+
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login');
+Route::get('logout', 'Auth\LoginController@logout')->name('logout');
