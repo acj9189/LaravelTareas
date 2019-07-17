@@ -51,6 +51,8 @@ Route::get('catalogo', 'CatalogoController@index')->name('catalogo');
 
 Route::resource('mensajes', 'MensajesController');
 
+Route::resource('usuarios', 'UsuariosController');
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout');
+

@@ -40,10 +40,26 @@
 
             <!-- sólo si es un usuario invitado, mostrar el formulario de autenticación -->
             @if (auth()->guest())
-                <li class="{{ seleccionado('login') }}">
-                    <a class="nav-link" href="{{ route('login') }}">Autenticarse</a>
-                </li>
-            @endif
+               <li class="{{ seleccionado('login') }}">
+                   <a class="nav-link" href="{{ route('login') }}">Autenticarse</a>
+               </li>
+            @else
+               <li class="dropdown">
+                   <a class="nav-link dropdown-toggle" 
+                      href="{{ route('mensajes.index') }}" data-toggle="dropdown">
+                       {{ auth()->user()->name }}
+                   </a>
+
+                   <ul class="dropdown-menu dropdown-menu-right">
+                       <li class="nav-item">
+                           <li><a class="dropdown-item" 
+                                 href="{{ route('logout') }}">Cerrar sesión
+                           </a><li>
+                       </li>
+                   </ul>
+               </li>
+           @endif
+
         </ul>
     </div>
 </nav>
