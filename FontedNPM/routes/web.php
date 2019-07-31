@@ -56,3 +56,12 @@ Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
+Route::get('roles', function () {
+   return \App\Role::all();
+});
+
+Route::get('roles-usuarios', function () {
+   return \App\Role::with('user')->get();
+});
+
+Route::resource('usuarios', 'UsuariosController');

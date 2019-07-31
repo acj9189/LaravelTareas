@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\UpdateUserRequest;
 
 class UsuarioController extends Controller
 {
 
     public function __construct() {
-       $this->middleware([
-           'auth', 'roles:administrador,editor'
-       ]);
+        $this->middleware('auth');
+        $this->middleware('roles:administrador,editor');
+
    }
 
 
@@ -66,7 +67,9 @@ class UsuarioController extends Controller
      */
     public function edit($id)
     {
-        //
+          $usuario = User::findOrFail($id);
+       return view('usuarios.editar', compact('usuario')
+
     }
 
     /**
@@ -78,7 +81,9 @@ class UsuarioController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+         $usuario = User::findOrFail($id);
+       $usuario->update($request->all());
+       return back()->with('info', 'Usuario actualizado')
     }
 
     /**
@@ -89,6 +94,7 @@ class UsuarioController extends Controller
      */
     public function destroy($id)
     {
-        //
+        User::findOrFail($id)->delete();
+       return redirect()->route('usuarios.index'
     }
 }

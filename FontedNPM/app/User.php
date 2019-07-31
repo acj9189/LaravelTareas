@@ -38,7 +38,18 @@ class User extends Authenticatable
     ];
 
     public function hasRoles(array $roles) {
-      return in_array($this->role, $roles);
+      foreach ($roles as $role) {
+           if ($this->role->nombre === $role) {
+               return true;
+           }
+       }
+       return false;
+
    }
+
+    public function role() {
+       return $this->belongsTo(Role::class);
+   }
+
 
 }

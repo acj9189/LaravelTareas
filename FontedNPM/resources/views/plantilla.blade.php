@@ -1,4 +1,7 @@
-!DOCTYPE html>
+
+<!DOCTYPE html>
+</body>
+</html>
 <html lang="es">
 <head>
    <meta charset="UTF-8">

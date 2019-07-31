@@ -28,18 +28,8 @@
 
         <ul class="navbar-nav navbar-right">
             <!-- si existe un usuario autenticado actualmente -->
-            @if (auth()->check())
-                <li class="{{ seleccionado('mensajes.index') }}">
-                    <a class="nav-link" href="{{ route('mensajes.index') }}">Mensajes</a>
-                </li>
 
-                <li class="{{ seleccionado('logout') }}">
-                    <a class="nav-link" href="{{ route('logout') }}">Cerrar sesión de {{ auth()->user()->name }} </a>
-                </li>
-            @endif
-
-            <!-- sólo si es un usuario invitado, mostrar el formulario de autenticación -->
-            @if (auth()->guest())
+              @if (auth()->guest())
                <li class="{{ seleccionado('login') }}">
                    <a class="nav-link" href="{{ route('login') }}">Autenticarse</a>
                </li>
@@ -60,6 +50,8 @@
                </li>
            @endif
 
+
+           
         </ul>
     </div>
 </nav>
