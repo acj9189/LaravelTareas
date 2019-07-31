@@ -31,12 +31,12 @@ Route::view('/acercade', 'acercade')->name('acercade');
 //Route::view('/catalogo', 'catalogo', compact('catalogo'))->name('catalogo');
 Route::view('/contacto', 'contacto')->name('contacto');
 
-Route::get('mensajes/crear', 'MensajesController@create')->name('crear-mensaje'); //Error Mensajes por mensaje
-Route::post('mensajes', 'MensajesController@store')->name('guardar-mensaje');
-Route::get('mensajes', 'MensajesController@index')->name('ver-mensajes');
-Route::get('mensajes/{id}', 'MensajesController@show')->name('buscar-mensaje');
-Route::get('mensajes/{id}/editar', 'MensajesController@edit')->name('editar-mensaje');
-Route::delete('mensajes/{id}', 'MensajesController@destroy')->name('eliminar-mensaje'); // Error Mensajes por mensaje
+Route::get('mensajes/crear', 'MensajeController@create')->name('crear-mensaje'); //Error Mensajes por mensaje
+Route::post('mensajes', 'MensajeController@store')->name('guardar-mensaje');
+Route::get('mensajes', 'MensajeController@index')->name('ver-mensajes');
+Route::get('mensajes/{id}', 'MensajeController@show')->name('buscar-mensaje');
+Route::get('mensajes/{id}/editar', 'MensajeController@edit')->name('editar-mensaje');
+Route::delete('mensajes/{id}', 'MensajeController@destroy')->name('eliminar-mensaje'); // Error Mensajes por mensaje
 
 Route::get('/catalogo','ProductoController@index')->name('productos.index');
 Route::get('/catalogo/{producto}','ProductoController@show')->name('productos.show');
@@ -49,9 +49,9 @@ Route::view('/', 'inicio', ['nombre' => 'NN'])->name('inicio');
 Route::view('acercade', 'acercade')->name('acercade');
 Route::get('catalogo', 'CatalogoController@index')->name('catalogo');
 
-Route::resource('mensajes', 'MensajesController');
+Route::resource('mensajes', 'MensajeController');
 
-Route::resource('usuarios', 'UsuariosController');
+Route::resource('usuarios', 'UsuarioController');
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout');
@@ -64,4 +64,4 @@ Route::get('roles-usuarios', function () {
    return \App\Role::with('user')->get();
 });
 
-Route::resource('usuarios', 'UsuariosController');
+Route::resource('usuarios', 'UsuarioController');

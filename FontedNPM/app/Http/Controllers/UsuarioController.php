@@ -1,30 +1,30 @@
+
+
 <?php
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateUserRequest; ////////// se importó
+use App\User;
 use Illuminate\Http\Request;
-use App\Http\Requests\UpdateUserRequest;
+////////// se importó
 
-class UsuarioController extends Controller
-{
+class UsuariosController extends Controller {
 
-    public function __construct() {
+    function __construct() { ///////////////////////////
         $this->middleware('auth');
-        $this->middleware('roles:administrador,editor');
-
-   }
-
+        // la siguiente excepción hace que edit de usuarios pueda ser accesible para cualquier ID desde la barra de direcciones
+        $this->middleware('roles:Administrador', ['except' => ['edit']]);
+    }
 
     /**
-     * Display a listing of the resource.
+     * Desplegar una lista del recurso (una lista de usuarios).
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         $usuarios = \App\User::all();
         return view('usuarios.index', compact('usuarios'));
-
     }
 
     /**
@@ -32,8 +32,7 @@ class UsuarioController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         //
     }
 
@@ -43,8 +42,7 @@ class UsuarioController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         //
     }
 
@@ -54,36 +52,33 @@ class UsuarioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         //
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Mostrar el formulario para editar un recurso (usuario) específico
      *
-     * @param  int  $id
+     * @param  int  $id El id del usuario a editar
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-          $usuario = User::findOrFail($id);
-       return view('usuarios.editar', compact('usuario')
-
+    public function edit($id) {
+        $usuario = User::findOrFail($id); /////////////////////se importó la clase para poder usar
+        return view('usuarios.editar', compact('usuario'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualizar el recurso especificado en la tabla "user"
+     * 
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  int  $id El id del usuario a actualizar
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-         $usuario = User::findOrFail($id);
-       $usuario->update($request->all());
-       return back()->with('info', 'Usuario actualizado')
+    public function update(UpdateUserRequest $request, $id) { ///////////UpdateUserRequest////////////////////////////////
+        $usuario = User::findOrFail($id);
+        $usuario->update($request->all());
+        return back()->with('info', 'Usuario actualizado');
     }
 
     /**
@@ -92,9 +87,8 @@ class UsuarioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         User::findOrFail($id)->delete();
-       return redirect()->route('usuarios.index'
+        return redirect()->route('usuarios.index');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Producto;
+use App\Http\Requests\UpdateUserRequest;
 
 class ProductoController extends Controller
 {
@@ -83,10 +84,12 @@ class ProductoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+    public function update(UpdateUserRequest $request, $id) {
+       $usuario = User::findOrFail($id);
+       $usuario->update($request->all());
+       return back()->with('info', 'Usuario actualizado');
+   }
+
 
     /**
      * Remove the specified resource from storage.
@@ -96,6 +99,6 @@ class ProductoController extends Controller
      */
     public function destroy($id)
     {
-        //
-    }
+        User::findOrFail($id)->delete();
+       return redirect()->route('usuarios.index    }
 }
