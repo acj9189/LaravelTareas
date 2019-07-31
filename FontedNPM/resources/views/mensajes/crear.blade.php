@@ -13,4 +13,18 @@
         <textarea name="contenido" placeholder="Mensaje..."></textarea><br>
         <button>Enviar</button>
     </form>
+
+      @if (auth()->guest())
+            <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input type="input" class="form-control" id="nombre" 
+                       name="nombre" placeholder="Ingrese aquí su nombre">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Correo</label>
+                <input type="email" class="form-control" id="email" name="email"
+                       placeholder="Ingrese aquí su correo">
+            </div>
+        @endif
 @endsection

@@ -1,12 +1,12 @@
-
-
 @extends('plantilla')
 
 @section('titulo', 'Todos los usuarios')
 
 @section('contenido')
     <br>
-  <h3>Todos los usuarios</h3>
+    <h3>Todos los usuarios</h3>
+    
+    <a class="btn btn-primary btn-sm float-right" href="{{ route('usuarios.create') }}">Crear nuevo usuario</a>
 
     <table class="table">
         <thead>
@@ -26,10 +26,13 @@
                     <td>{{ $usuario->name}}</td>
                     <td>{{ $usuario->email}}</td>
                     <td>
-            @foreach ($usuario->roles as $role)
+                        {{--
+                        @foreach ($usuario->roles as $role)
                             {{ $role->nombre }}: {{ $role->descripcion }} <br>
                         @endforeach
-          </td>
+                        --}}
+                        {{ $usuario->roles->pluck('nombre')->implode(' - ') }}
+                    </td>
                     <td>{{ $usuario->address}}</td>
                     <td>{{ $usuario->phone}}</td>
                     <td>

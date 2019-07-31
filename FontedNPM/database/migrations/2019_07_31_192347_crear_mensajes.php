@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Mensajes extends Migration
+class CrearMensajes extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,17 @@ class Mensajes extends Migration
      */
     public function up()
     {
-        Schema::create('mensajes', function (Blueprint $table) {
+       Schema::create('mensajes', function (Blueprint $table) {
            $table->bigIncrements('id');
            $table->string('nombre');
            $table->string('email');
            $table->string('asunto');
            $table->text('contenido');
+           $table->bigInteger('user_id')->unsigned()->nullable();
+           $table->foreign('user_id')->references('id')->on('users');
            $table->timestamps();
-        });
+       });
+  //
     }
 
     /**
@@ -30,6 +33,6 @@ class Mensajes extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mensajes');
+        //
     }
 }

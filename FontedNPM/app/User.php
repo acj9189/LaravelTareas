@@ -1,3 +1,5 @@
+
+
 <?php
 
 namespace App;
@@ -14,7 +16,7 @@ class User extends Authenticatable {
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'address', 'phone'
+        'name', 'email', 'password', 'address', 'phone',
     ];
 
     /**
@@ -45,14 +47,38 @@ class User extends Authenticatable {
     }
 
     public function hasRoles(array $roles) {
-        foreach ($roles as $role) {
-            foreach ($this->roles as $userRole) {
-                // se compara cada rol recibido como argumento, con uno de los roles de usuario
-                if ($userRole->nombre === $role) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        // foreach ($roles as $role) {
+        //     foreach ($this->roles as $userRole) {
+        //         // se compara cada rol recibido como argumento, con uno de los roles de usuario
+        //         if ($userRole->nombre === $role) {
+        //             return true;
+        //         }
+        //     }
+        // }
+        // return false;
+        // lo anterior equivale a lo siguiente:
+        return $this->roles->pluck('nombre')->intersect($roles)->count();
     }
+
+    public function isAdmin() {
+        return $this->hasRoles(['Administrador']);
+    }
+
+     public function messages() {
+        return $this->hasMany(Mensaje::class);
+    }
+
+    public function setPasswordAttribute($password) {
+       $this->attributes['password'] = bcrypt($password);
+   }
+
+   public function destroy($id) {
+       $usuario = User::findOrFail($id);
+       $usuario->roles()->detach();
+       $usuario->delete();
+       return back();
+   }
+
+
+
 }
