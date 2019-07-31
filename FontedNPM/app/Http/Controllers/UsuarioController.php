@@ -21,8 +21,9 @@ class UsuarioController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $usuarios = \App\User::all();
-        return view('usuarios.index', compact('usuarios'));
+         $usuarios = User::with(['roles', 'nota', 'etiquetas'])->get();
+       return view('usuarios.index', compact('usuarios'));
+
     }
 
     /**

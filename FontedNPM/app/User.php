@@ -1,5 +1,3 @@
-
-
 <?php
 
 namespace App;
@@ -37,13 +35,17 @@ class User extends Authenticatable {
         'email_verified_at' => 'datetime',
     ];
 
+    public function setPasswordAttribute($password) {
+        $this->attributes['password'] = bcrypt($password);
+    }
+
     /**
      * Define una relacion Eloquen entre el usuario y los roles
      * Se retorna la relación a la que pertenece
      */
     public function roles() {
         // belongsToMany puede recibir un segundo parámetro con el nombre del pivote si este no se creo usando la convención
-        return $this->belongsToMany(Role::class); // pertenece a muchos
+        return $this->belongsToMany(Role::class)->withTimestamps(); // muchos a muchos
     }
 
     public function hasRoles(array $roles) {
@@ -64,21 +66,18 @@ class User extends Authenticatable {
         return $this->hasRoles(['Administrador']);
     }
 
-     public function messages() {
+    /**
+     * Se retornará un objeto con los atributos necesarios para
+     * procesar los mensajes relacionados con un usuario
+     */
+    public function messages() {
+        // se puede cambiar a hasOnMessage::class); de ser necesario
+        // dd($this->hasMany(Mensaje::class));
         return $this->hasMany(Mensaje::class);
     }
 
-    public function setPasswordAttribute($password) {
-       $this->attributes['password'] = bcrypt($password);
-   }
-
-   public function destroy($id) {
-       $usuario = User::findOrFail($id);
-       $usuario->roles()->detach();
-       $usuario->delete();
-       return back();
-   }
-
-
-
+    public function nota() { // <-- un nombre cualquiera
+        // se puede usar morphOne/morphMany
+        return $this->morphOne(Nota::class, 'anotacion'); // param2 = llave o prefijo, ver migración: $table->integer('anotacion_id')->unsigned();
+    }
 }

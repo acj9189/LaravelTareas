@@ -2,66 +2,61 @@
 
 namespace App\Http\Controllers;
 
+use App\Mensaje;
 use Illuminate\Http\Request;
-use DB;
-use Carbon\Carbon;
 
+class MensajeController extends Controller {
 
-class MensajesController extends Controller
-{
-
-    public function __construct() {
-       $this->middleware('auth', ['except' => ['create', 'store']]);
-   }
+    function __construct() {
+        $this->middleware('auth', ['except' => ['create', 'store']]);
+    }
 
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $mensajes = DB::table('mensajes')->get();
-       	return view('mensajes.index', compact('mensajes'));
+public function index() {
+      $mensajes = Mensaje::with(['user', 'nota', 'etiquetas'])->get();
+       return view('mensajes.index', compact('mensajes'));
+   }
 
-    }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario contacto.blade.php, para crear un nuevo recurso.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        return view('mensajes.crear');
+    public function create() {
+        $mostrarCampos = auth()->guest(); // si es invitado, $mostrarCampos=true /////////////////////////
+        return view('mensajes.crear', compact('mostrarCampos', 'mostrarCampos'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Almacenar un recurso recién creado.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-       if (auth()->check()) {
-           $datosUsuario = auth()->user()->getAttributes();
-           $request->request->add([
-               'nombre' => $datosUsuario['name'],
-               'email' => $datosUsuario['email'],
-           ]);
-       }
+    public function store(Request $request) {
 
-       $mensaje = Mensaje::create($request->all());
+        // dd($request->all()); // verificar lo que llega
 
-       if (auth()->check()) {
-           auth()->user()->messages()->save($mensaje);
-       }
+        if (auth()->check()) {
+            $datosUsuario = auth()->user()->getAttributes();
+            $request->request->add([
+                'nombre' => $datosUsuario['name'],
+                'email' => $datosUsuario['email'],
+            ]);
+        }
 
-       return redirect()->route('mensajes.create')
-              ->with('info', 'Hemos recibido tu mensaje');
+        $mensaje = Mensaje::create($request->all());
 
+        if (auth()->check()) {
+            auth()->user()->messages()->save($mensaje);
+        }
 
+        return redirect()->route('mensajes.create')->with('info', 'Hemos recibido tu mensaje');
     }
 
     /**
@@ -71,10 +66,9 @@ class MensajesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id) {
-       $mensaje = DB::table('mensajes')->where('id', $id)->first();
-       return view('mensajes.show', compact('mensaje'));
-   }
-
+        $mensaje = Mensaje::findOrFail($id);
+        return view('mensajes.show', compact('mensaje'));
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -82,11 +76,10 @@ class MensajesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        $mensaje = DB::table('mensajes')->where('id', $id)->first();
-        return view('mensajes.editar', compact('mensaje'));
-
+    public function edit($id) {
+        $mensaje = Mensaje::findOrFail($id);
+        $mostrarCampos = !$mensaje->user_id;  // true si el mensaje no tiene user_id ///////////////////
+        return view('mensajes.editar', compact('mensaje', 'mostrarCampos'));
     }
 
     /**
@@ -96,16 +89,9 @@ class MensajesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        DB::table('mensajes')->where('id', $id)->update([
-           'nombre' => $request->input('nombre'),
-           'email' => $request->input('correo'),
-           'asunto' => $request->input('asunto'),
-           'mensaje' => $request->input('contenido'),
-           'updated_at' => Carbon::now()
-       ]);
-       return redirect()->route('ver-mensajes');
+    public function update(Request $request, $id) {
+        Mensaje::findOrFail($id)->update($request->all());
+        return redirect()->route('mensajes.index');
     }
 
     /**
@@ -114,10 +100,8 @@ class MensajesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        DB::table('mensajes')->where('id', $id)->delete();
-        return redirect()->route('ver-mensajes');
-
+    public function destroy($id) {
+        Mensaje::findOrFail($id)->delete();
+        return redirect()->route('mensajes.index');
     }
 }
