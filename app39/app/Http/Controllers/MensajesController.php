@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Mail;
 use App\Mensaje;
 use Illuminate\Http\Request;
+use App\Events\MensajeRecibido;/////////////////////////////////
 
 class MensajesController extends Controller {
 
@@ -59,6 +61,8 @@ class MensajesController extends Controller {
             auth()->user()->messages()->save($mensaje);
         }
 
+        event(new MensajeRecibido($mensaje));
+
         return redirect()->route('mensajes.create')->with('info', 'Hemos recibido tu mensaje');
     }
 
@@ -81,7 +85,7 @@ class MensajesController extends Controller {
      */
     public function edit($id) {
         $mensaje = Mensaje::findOrFail($id);
-        $mostrarCampos = !$mensaje->user_id;  // true si el mensaje no tiene user_id ///////////////////
+        $mostrarCampos = !$mensaje->user_id; // true si el mensaje no tiene user_id ///////////////////
         return view('mensajes.editar', compact('mensaje', 'mostrarCampos'));
     }
 
