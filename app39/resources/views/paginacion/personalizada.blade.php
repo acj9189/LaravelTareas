@@ -8,3 +8,4 @@ Total de registros por página: {{  $paginator->count() }}
 &nbsp;&nbsp;
 <a href="{{ $paginator->nextPageURL() }}">Siguiente página ></a> 
 <p>
+
