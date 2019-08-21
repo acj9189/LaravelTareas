@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Mail;
+use App\Events\MensajeRecibido;
 use App\Mensaje;
 use Illuminate\Http\Request;
-use App\Events\MensajeRecibido;/////////////////////////////////
+use Illuminate\Support\Facades\Cache;
 
 class MensajesController extends Controller {
 
@@ -23,7 +23,29 @@ class MensajesController extends Controller {
         // Los siguientes son ejemplos de carga adelantada:
         // $mensajes = Mensaje::with('user')->get(); // recupera los mensajes con sus usuarios
         // $mensajes = Mensaje::with(['user', 'nota'])->get(); // recupera los mensajes con sus usuarios y sus notas
-        $mensajes = Mensaje::with(['user', 'nota', 'etiquetas'])->get(); // recupera los mensajes con sus usuarios sus notas y sus etiquetas
+        // $mensajes = Mensaje::with(['user', 'nota', 'etiquetas'])->get(); // recupera los mensajes con sus usuarios sus notas y sus etiquetas
+        // $mensajes = Mensaje::with(['user', 'nota', 'etiquetas'])->paginate(10);
+
+        // $mensajes = Mensaje::with(['user', 'nota', 'etiquetas'])->latest()->paginate(10);
+
+        // $mensajes = Mensaje::with(['user', 'nota', 'etiquetas'])->simplePaginate(10);
+
+        $key = "mensajes.pagina." . request('page', 1);
+
+        // $mensajes = Cache::remember($key, 600, function () {
+        //     return Mensaje::with([
+        //         'user',
+        //         'nota',
+        //         'etiquetas',
+        //     ])->orderBy('created_at', request('orden', 'DESC'))->paginate(10);
+        // });
+
+        $mensajes = Cache::store('redis')->tags('mensajes')
+                                        ->rememberForever($key, function () {
+          … // igual que en la versión anterior
+       });
+
+
         return view('mensajes.index', compact('mensajes'));
     }
 
@@ -33,7 +55,7 @@ class MensajesController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        $mostrarCampos = auth()->guest(); // si es invitado, $mostrarCampos=true /////////////////////////
+        $mostrarCampos = auth()->guest(); // si es invitado, $mostrarCampos=true
         return view('mensajes.crear', compact('mostrarCampos', 'mostrarCampos'));
     }
 
@@ -48,10 +70,9 @@ class MensajesController extends Controller {
         // dd($request->all()); // verificar lo que llega
 
         if (auth()->check()) {
-            $datosUsuario = auth()->user()->getAttributes();
             $request->request->add([
-                'nombre' => $datosUsuario['name'],
-                'email' => $datosUsuario['email'],
+                'nombre' => auth()->user()->name,
+                'email' => auth()->user()->email,
             ]);
         }
 
@@ -62,6 +83,7 @@ class MensajesController extends Controller {
         }
 
         event(new MensajeRecibido($mensaje));
+        Cache::flush();
 
         return redirect()->route('mensajes.create')->with('info', 'Hemos recibido tu mensaje');
     }
@@ -73,7 +95,16 @@ class MensajesController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show($id) {
-        $mensaje = Mensaje::findOrFail($id);
+        // $mensaje = Cache::remember("mensajes.{$id}", 600, function () use ($id) {
+        //     return Mensaje::findOrFail($id);
+        // });
+
+        $mensaje = Cache::store('redis')->tags('mensajes')
+                 ->rememberForever("mensajes.{$id}", function () use ($id) {
+           return Mensaje::findOrFail($id);
+       });
+
+
         return view('mensajes.show', compact('mensaje'));
     }
 
@@ -84,8 +115,17 @@ class MensajesController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
-        $mensaje = Mensaje::findOrFail($id);
-        $mostrarCampos = !$mensaje->user_id; // true si el mensaje no tiene user_id ///////////////////
+        // $mensaje = Cache::remember("mensajes.{$id}", 600, function () use ($id) {
+        //     return Mensaje::findOrFail($id);
+        // });
+
+         $mensaje = Cache::store('redis')->tags('mensajes')
+                 ->rememberForever("mensajes.{$id}", function () use ($id) {
+           return Mensaje::findOrFail($id);
+       });
+
+
+        $mostrarCampos = !$mensaje->user_id; // true si el mensaje no tiene user_id
         return view('mensajes.editar', compact('mensaje', 'mostrarCampos'));
     }
 
@@ -98,6 +138,7 @@ class MensajesController extends Controller {
      */
     public function update(Request $request, $id) {
         Mensaje::findOrFail($id)->update($request->all());
+        Cache::flush();
         return redirect()->route('mensajes.index');
     }
 
@@ -109,6 +150,7 @@ class MensajesController extends Controller {
      */
     public function destroy($id) {
         Mensaje::findOrFail($id)->delete();
+        Cache::flush();
         return redirect()->route('mensajes.index');
     }
 }

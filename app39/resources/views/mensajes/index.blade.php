@@ -4,7 +4,7 @@
 
 @section('contenido')
     <br>
-	<h3>Todos los mensajes</h3>
+    <h3>Todos los mensajes</h3>
 
     <table class="table">
         <thead>
@@ -28,16 +28,16 @@
                                 {{ $mensaje->user->name }}
                             </a>
                         </td> 
-						<td>{{ $mensaje->user->email }}</td>
-					@else
-						<td>{{ $mensaje->nombre }}</td> {{-- ojo mensaje->nombre --}}
-						<td>{{ $mensaje->email }}</td>
+                        <td>{{ $mensaje->user->email }}</td>
+                    @else
+                        <td>{{ $mensaje->nombre }}</td> {{-- ojo mensaje->nombre --}}
+                        <td>{{ $mensaje->email }}</td>
                     @endif
                     
                     <td>
-						<a href="{{ route('mensajes.show', $mensaje->id) }}">
-							{{ $mensaje->asunto }}
-						</a>
+                        <a href="{{ route('mensajes.show', $mensaje->id) }}">
+                            {{ $mensaje->asunto }}
+                        </a>
                     </td>
                     
                     <td>{{ $mensaje->contenido }}</td>
@@ -60,6 +60,21 @@
                     </td>
                 </tr>
             @endforeach
+
+            {{-- lo básico, sin recibir argumentos
+                {{ $mensajes->links() }}
+            --}}
+
+            {{-- personalizando la paginación con un blade de la casa
+               {{ $mensajes->appends(request()->query())->links('paginacion.personalizada') }}
+            --}}
+
+            {{-- utilizando plantillas generadas mediante: php artisan vendor:publish --tag=laravel-pagination
+                {{ $mensajes->appends(request()->query())->links('pagination::default') }}
+            --}}
+
+            {{ $mensajes->appends(request()->query())->links() }}
+
         </tbody>
     </table>
 

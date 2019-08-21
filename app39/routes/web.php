@@ -4,7 +4,7 @@
 //     echo "<pre>{ [$query->time] - $query->sql }</pre>";
 // });
 
-Route::view('/', 'inicio', ['nombre' => 'Carlos'])->name('inicio');
+Route::view('/', 'inicio', ['nombre' => 'Andres Cardenas'])->name('inicio');
 Route::view('acercade', 'acercade')->name('acercade');
 Route::get('catalogo', 'CatalogoController@index')->name('catalogo');
 
